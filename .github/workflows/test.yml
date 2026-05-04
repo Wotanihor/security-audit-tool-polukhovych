@@ -1,0 +1,9 @@
+name: CI Security Test
+on: [pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Validator Test
+        run: python -c "from validator import validate_ip; assert validate_ip('192.168.1.1') == True"

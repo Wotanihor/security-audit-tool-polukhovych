@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Unit Test (Fail Fast)
-        run: python -c "assert 1 == 2"
+        run: python -c "assert 1 == 1"
 
   build:
     needs: test

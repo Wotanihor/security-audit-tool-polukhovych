@@ -44,7 +44,7 @@ jobs:
       - name: Smoke Test (Verify)
         run: |
           echo "Перевірка працездатності на Staging..."
-          python -c "assert 2 == 2"
+          python -c "assert 2 == 3"
 
   deploy_production:
     needs: verify_staging

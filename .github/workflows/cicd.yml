@@ -1,0 +1,62 @@
+name: CI/CD Multi-Stage Pipeline
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unit Test (Fail Fast)
+        run: python -c "assert 1 == 1"
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Artifact
+        run: echo "Це зібраний артефакт версії $GITHUB_SHA" > build_artifact.txt
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-artifact
+          path: build_artifact.txt
+
+  deploy_staging:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-artifact
+      - name: Deploy to Staging
+        # Виводимо вміст артефакту як імітацію розгортання
+        run: |
+          echo "Розгортання на Staging..."
+          cat build_artifact.txt
+
+  verify_staging:
+    needs: deploy_staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Smoke Test (Verify)
+        run: |
+          echo "Перевірка працездатності на Staging..."
+          python -c "assert 2 == 2"
+
+  deploy_production:
+    needs: verify_staging
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-artifact
+      - name: Deploy to Production
+        run: |
+          echo "РОЗГОРТАННЯ НА PRODUCTION..."
+          cat build_artifact.txt
+          echo "Успішно!"

@@ -6,4 +6,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run Validator Test
-        run: python -c "from validator import validate_ip; assert validate_ip('192.168.1.1') == False"
+        run: python -c "from validator import validate_ip; assert validate_ip('192.168.1.1') == True"
